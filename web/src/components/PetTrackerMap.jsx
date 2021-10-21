@@ -14,6 +14,7 @@ const geofenceCollectionName = 'PetTrackerGeofenceCollection';
 const PetTrackerMap = (props) => {
   const devPosMarkers = props.devPosMarkers;
   const mapRegion = props.config.aws_project_region;
+  const mapCenter = props.center;
   const mapRef = useRef(null);
   const [map, setMap] = useState();
   const client = Auth.currentCredentials().then(credentials =>
@@ -67,7 +68,7 @@ const PetTrackerMap = (props) => {
     }
   }
 
-  useEffect((type, listener) => {
+  useEffect(() => {
     async function initializeMap() {
       if (mapRef.current == null) {
         return;
@@ -123,7 +124,15 @@ const PetTrackerMap = (props) => {
     initializeMap();
   }, [mapRef]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (map == null) {
+      return;
+    }
+    console.log('Set map center: ', mapCenter)
+    map.setCenter(mapCenter);
+  }, [mapCenter]);
+
+  useEffect(() => {
       devPosMarkers.slice(-1).forEach(last =>
         new Marker({
           color: "red"
